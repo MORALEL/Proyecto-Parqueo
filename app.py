@@ -5,75 +5,75 @@ import pyodbc
 app = Flask(__name__)
 
 conn = pyodbc.connect(
-    'DRIVER={ODBC Driver 17 for SQL Server};'
-    'SERVER=PCDEMABERICK\\SQLEXPRESS01;'
-    'DATABASE=proyectoparqueo;'
-    'Trusted_Connection=yes;'
+    "DRIVER={ODBC Driver 17 for SQL Server};"
+    "SERVER=PCDEMABERICK\\SQLEXPRESS01;"
+    "DATABASE=proyectoparqueo;"
+    "Trusted_Connection=yes;"
 )
 
 cursor = conn.cursor()
 
 
 # Página de inicio
-@app.route('/')
+@app.route("/")
 def index():
-     return render_template('index.html')
+     return render_template("index.html")
 
 # Registro de usuario
-@app.route('/registro_usuario', methods=['GET', 'POST'])
+@app.route("/registro_usuario", methods=["GET", "POST"])
 def registro_usuario():
-    if request.method == 'POST':
-        cedula = request.form['cedula']
-        nombre = request.form['nombre']
-        telefono = request.form['telefono']
-        direccion = request.form['direccion']
+    if request.method == "POST":
+        cedula = request.form["cedula"]
+        nombre = request.form["nombre"]
+        telefono = request.form["telefono"]
+        direccion = request.form["direccion"]
         cursor.execute("INSERT INTO usuarios (cedula, nombre, telefono, direccion) VALUES (?, ?, ?, ?)",
                         (cedula, nombre, telefono, direccion))
         conn.commit()
-        return redirect('/')
-    return render_template('registro_usuario.html')
+        return redirect("/")
+    return render_template("registro_usuario.html")
 
 # Registro de vehículo
-@app.route('/registro_vehiculo', methods=['GET', 'POST'])
+@app.route('/registro_vehiculo', methods=["GET", "POST"])
 def registro_vehiculo():
-    if request.method == 'POST':
-        placa = request.form['placa']
-        marca = request.form['marca']
-        modelo = request.form['modelo']
-        id_usuario = request.form['id_usuario']
+    if request.method == "POST":
+        placa = request.form["placa"]
+        marca = request.form["marca"]
+        modelo = request.form["modelo"]
+        id_usuario = request.form["id_usuario"]
 
         
         if not placa or not marca or not modelo or not id_usuario:
             cursor.execute("SELECT id_usuario, nombre FROM usuarios")
             usuarios = cursor.fetchall()
-            return render_template('registro_vehiculo.html', usuarios=usuarios, error="Todos los campos son obligatorios.")
+            return render_template("registro_vehiculo.html", usuarios=usuarios, error="Todos los campos son obligatorios.")
 
         cursor.execute("INSERT INTO vehiculos (placa, marca, modelo, id_usuario) VALUES (?, ?, ?, ?)",
                         (placa, marca, modelo, id_usuario))
         conn.commit()
-        return redirect('/')
+        return redirect("/")
     
     # Obtener lista de usuarios para el formulario
     cursor.execute("SELECT id_usuario, nombre FROM usuarios")
     usuarios = cursor.fetchall()
-    return render_template('registro_vehiculo.html', usuarios=usuarios)
+    return render_template("registro_vehiculo.html", usuarios=usuarios)
 
 # Registro de reserva
 
 max_espacios = 25
-@app.route('/reserva', methods=['GET', 'POST'])
+@app.route("/reserva", methods=["GET", "POST"])
 def reserva():
-    if request.method == 'POST':
-        id_vehiculo = request.form['id_vehiculo']
-        fecha = request.form['fecha']
-        hora_entrada = request.form['hora_entrada']
-        hora_salida = request.form['hora_salida']
-        espacio = request.form['espacio']
+    if request.method == "POST":
+        id_vehiculo = request.form["id_vehiculo"]
+        fecha = request.form["fecha"]
+        hora_entrada = request.form["hora_entrada"]
+        hora_salida = request.form["hora_salida"]
+        espacio = request.form["espacio"]
 
         if not id_vehiculo or not fecha or not hora_entrada or not hora_salida or not espacio:
             cursor.execute("SELECT id, placa FROM vehiculos")
             vehiculos = cursor.fetchall()
-            return render_template('reserva.html', vehiculos=vehiculos, error="Todos los campos son obligatorios.")
+            return render_template("reserva.html", vehiculos=vehiculos, error="Todos los campos son obligatorios.")
 
         # Verificar si el espacio ya está reservado para esa fecha
 
@@ -86,7 +86,7 @@ def reserva():
             
             cursor.execute("SELECT id, placa FROM vehiculos")
             vehiculos = cursor.fetchall()
-            return render_template('reserva.html', vehiculos=vehiculos, error="Ese espacio ya está reservado para esa fecha.")
+            return render_template("reserva.html", vehiculos=vehiculos, error="Ese espacio ya está reservado para esa fecha.")
 
 
 # Verificar si ya se alcanzó el límite de reservas para esa fecha
@@ -99,7 +99,7 @@ def reserva():
         if total_reservas >= max_espacios:
             cursor.execute("SELECT id, placa FROM vehiculos")
             vehiculos = cursor.fetchall()
-            return render_template('reserva.html', vehiculos=vehiculos, error="Se alcanzó el límite de reservas para esta fecha.")
+            return render_template("reserva.html", vehiculos=vehiculos, error="Se alcanzó el límite de reservas para esta fecha.")
 
 
 # Insertar la nueva reserva
@@ -108,17 +108,17 @@ def reserva():
             VALUES (?, ?, ?, ?, ?)
         """, (id_vehiculo, fecha, hora_entrada, hora_salida, espacio))
         conn.commit()
-        return redirect('/')
+        return redirect("/")
 
 # Obtener lista de vehículos para mostrar en el formulario
     cursor.execute("SELECT id, placa FROM vehiculos")
     vehiculos = cursor.fetchall()
-    return render_template('reserva.html', vehiculos=vehiculos)
+    return render_template("reserva.html", vehiculos=vehiculos)
 
 
 # Ver reservas
 
-@app.route('/ver_reservas')
+@app.route("/ver_reservas")
 def ver_reservas():
     cursor.execute("""
         SELECT r.id_reservas, v.placa, r.fecha, r.hora_entrada, r.hora_salida, r.espacio
@@ -127,17 +127,17 @@ def ver_reservas():
         ORDER BY r.fecha DESC
     """)
     reservas = cursor.fetchall()
-    return render_template('ver_reservas.html', reservas=reservas)
+    return render_template("ver_reservas.html", reservas=reservas)
 
-@app.route('/entrada', methods=['POST'])
+@app.route("/entrada", methods=["POST"])
 def entrada():
-    id_vehiculo = request.form['id_vehiculo']
+    id_vehiculo = request.form["id_vehiculo"]
     max_vehiculos = 15
 
     
     if not id_vehiculo:
         return "Debe seleccionar un vehículo."
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     app.run(debug=True)
 
