@@ -1,0 +1,116 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Reserva</title>
+
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            border-radius: 20px;
+            padding: 0px 60px;
+            background-color: #c1ddf8;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .centrado {
+            text-align: center;
+            background-color: #f1ebeb;
+            padding: 60px 80px;
+            border-radius: 16px;
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1); 
+        }
+
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 40px;
+        }
+
+
+        form {
+            display: flex;
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+
+        input[type="text"],
+        input[type="submit"] {
+            padding: 10px;
+            margin: 5px 0;
+            border: 1px solid #a5a1a1;
+            border-radius: 10px;
+            font-size: 15px;
+        }
+
+        input[type="submit"] {
+            background-color: #3498db;
+            color: rgb(255, 255, 255);
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+
+        input[type="submit"]:hover {
+            background-color: #2980b9;
+        }
+
+        
+        .boton-inicio {
+            margin-top: 600px;      
+            margin-right: -50px;
+            margin-left: -375px;
+            padding: 10px 20px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+        }
+
+
+        p {
+            margin-top: 10px;
+        }
+
+    </style>
+
+
+</head>
+<body>
+    <div class="centrado">
+    <h2>Hacer Reserva</h2>
+    <form method="post">
+        Vehículo:
+        <select name="id_vehiculo">
+            {% for vehiculo in vehiculos %}
+                <option value="{{ vehiculo.id }}">{{ vehiculo.placa }}</option>
+            {% endfor %}
+        </select><br>
+        Fecha: <input type="date" name="fecha" required><br>
+        Hora Entrada: <input type="time" name="hora_entrada" required><br>
+        Hora Salida: <input type="time" name="hora_salida" required><br>
+        Espacio: <input type="number" name="espacio" required><br>
+        <input type="submit" value="Reservar">
+    </form>
+    </div>
+
+    <div style="text-align: center; margin-top: 20px;">
+    <button onclick="irAlInicio()" class="boton-inicio">Ir al inicio</button>
+    </div>
+
+    <script>
+        function irAlInicio() {
+            window.history.back();
+        }
+    </script>
+
+</body>

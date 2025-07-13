@@ -1,0 +1,73 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Gestión de Parqueo Valet</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        table { border-collapse: collapse; width: 100%; margin-bottom: 20px; }
+        th, td { border: 1px solid #ccc; padding: 8px; text-align: center; }
+        th { background-color: #f2f2f2; }
+        h2 { margin-top: 40px; }
+        .error { color: red; }
+    </style>
+</head>
+<body>
+
+    <h1>Gestión de Parqueo Valet</h1>
+
+    <h2>Vehículos en el Parqueo</h2>
+    <table>
+        <tr>
+            <th>Posición</th>
+            <th>Placa</th>
+            <th>Fecha Entrada</th>
+        </tr>
+        {% for vehiculo in pila %}
+        <tr>
+            <td>{{ vehiculo[0] }}</td>
+            <td>{{ vehiculo[1] }}</td>
+        <td>{{ vehiculo[2] }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+
+    <h2>Cola de Espera</h2>
+    <table>
+        <tr>
+            <th>Placa</th>
+            <th>Fecha Solicitud</th>
+        </tr>
+        {% for pendiente in pendientes %}
+        <tr>
+            <td>{{ pendiente[1] }}</td>
+            <td>{{ pendiente[2] }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+
+    <h2>Registrar Entrada</h2>
+    <form method="POST" action="/entrada">
+        <label for="id_vehiculo">Vehículo:</label>
+        <select name="id_vehiculo" required>
+            {% for vehiculo in vehiculos %}
+            <option value="{{ vehiculo[0] }}">{{ vehiculo[1] }}</option>
+            {% endfor %}
+        </select>
+        <button type="submit">Ingresar</button>
+    </form>
+
+    <h2>Registrar Salida</h2>
+    <form method="POST" action="/salida">
+        <label for="id_stack">ID en la cima:</label>
+        <input type="number" name="id_stack" required>
+        <button type="submit">Salir</button>
+    </form>
+
+    {% if mensaje %}
+        <p class="error">{{ mensaje }}</p>
+    {% endif %}
+
+</body>
+</html>
